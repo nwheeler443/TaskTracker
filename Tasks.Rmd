@@ -1,0 +1,31 @@
+---
+title: "Task management"
+output: html_notebook
+---
+
+```{r}
+system("~/Documents/scripts/parse_ical.pl")
+
+library(stringr)
+
+tasks <- read.delim("~/Documents/tasktracker/tasks.txt", header=F, comment.char="@")
+tasks <- tasks[-grep("timeful", tasks[,1]),]
+tasks <- tasks[grep("#", tasks[,1]),]
+tasks$Task <- paste(lapply(tasks[,1], function (x) str_extract(x, "#\\w+")))
+tasks$Task[tasks$Task=="NA"] <- NA
+tasks$Task <- sub("#", "", tasks$Task)
+tasks$Subtask <- paste(lapply(tasks[,1], function (x) str_extract(x, "%\\w+")))
+tasks$Subtask[tasks$Subtask=="NA"] <- NA
+tasks$Subtask <- sub("%", "", tasks$Subtask)
+tasks$Start <- as.numeric(paste(tasks[,2], tasks[,3], sep=""))
+tasks$End <- as.numeric(paste(tasks[,4], tasks[,5], sep=""))
+tasks[,3] <- str_pad(tasks[,3], 6, pad = "0")
+tasks[,5] <- str_pad(tasks[,5], 6, pad = "0")
+tasks$POSIXct_start <- as.POSIXlt(paste(substr(tasks$V2, 1, 4), "-", substr(tasks$V2, 5, 6), "-", substr(tasks$V2, 7, 8), " ", substr(tasks$V3, 1, 2), ":", substr(tasks$V3, 3,4),  ":", substr(tasks$V3, 5,6), " BST", sep=""))
+tasks$POSIXct_end <- as.POSIXlt(paste(substr(tasks$V4, 1, 4), "-", substr(tasks$V4, 5, 6), "-", substr(tasks$V4, 7, 8), " ", substr(tasks$V5, 1, 2), ":", substr(tasks$V5, 3,4),  ":", substr(tasks$V5, 5,6), " BST", sep=""))
+
+ggplot(tasks, aes(y=POSIXct_start, ymin=POSIXct_start, ymax=POSIXct_end, x=Task, col=Subtask)) + theme_bw() + coord_flip() + scale_y_datetime() + geom_linerange(size=10) + ylab("") + scale_color_discrete(na.value="black")
+ggplot(tasks, aes(x=Task, y=(POSIXct_end-POSIXct_start)/60, fill=Subtask)) + geom_col() + theme_bw() + ylab("Time (hours)") + scale_fill_discrete(na.value = "black") + coord_flip()
+
+```
+
