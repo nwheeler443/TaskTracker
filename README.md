@@ -6,4 +6,5 @@ Projects are coded with a hash, e.g. #Project1
 
 Subtasks are coded with a percentage sign, e.g. %Research
 
-[[https://github.com/nwheeler443/TaskTracker/blob/master/barplot.pdf|alt=barplot]]
+<img src="violin.png" title="" alt="" width="700" />
+<img src="barplot.png" title="" alt="" width="700" />
