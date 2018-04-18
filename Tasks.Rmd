@@ -33,14 +33,3 @@ ggplot(tasks, aes(x=Task, y=(POSIXct_end-POSIXct_start)/60, fill=Subtask)) + geo
 
 ```
 
-```{r}
-# examples for documentation
-
-example <- tasks[tasks$Task %in% c("Wikipedia", "Salmonella", "BAPS", "Strep"),]
-ggplot(example, aes(y=POSIXct_start, x=Task, col=Task)) + theme_bw() + scale_y_datetime() + geom_violin(scale = "count", bw=100000, width=5) + ylab("") + scale_color_discrete(na.value="black") + coord_flip() + theme(legend.position="none")
-ggsave("~/Documents/tasktracker/violin.png", width=8, height=6)
-ggplot(example, aes(x=Task, y=(POSIXct_end-POSIXct_start)/60, fill=Subtask)) + geom_col() + theme_bw() + ylab("Time (hours)") + scale_fill_discrete(na.value = "black") + coord_flip()
-ggsave("~/Documents/tasktracker/barplot.png", width=8, height=6)
-
-```
-
